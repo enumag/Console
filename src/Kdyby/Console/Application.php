@@ -46,18 +46,26 @@ class Application extends Symfony\Component\Console\Application
 	 */
 	private $serviceLocator;
 
+    /**
+     * @var bool
+     */
+    private $passExceptionsToNetteApplication;
+
 
 
 	/**
 	 * @param string $name
 	 * @param string $version
+     * @param bool $passExceptionsToNetteApplication
 	 */
-	public function __construct($name = 'Nette Framework', $version = NULL)
+	public function __construct($name = 'Nette Framework', $version = NULL, $passExceptionsToNetteApplication = FALSE)
 	{
 		parent::__construct($name, $version ?: (class_exists('Nette\Framework') ? Nette\Framework::VERSION : 'UNKNOWN'));
 
 		$this->setCatchExceptions(FALSE);
 		$this->setAutoExit(FALSE);
+
+        $this->passExceptionsToNetteApplication = $passExceptionsToNetteApplication;
 	}
 
 
@@ -137,7 +145,7 @@ class Application extends Symfony\Component\Console\Application
 				Debugger::log($e->getMessage(), Debugger::ERROR);
 				return self::INPUT_ERROR_EXIT_CODE;
 
-			} elseif ($app = $this->serviceLocator->getByType('Nette\Application\Application', FALSE)) {
+			} elseif ($this->passExceptionsToNetteApplication && $app = $this->serviceLocator->getByType('Nette\Application\Application', FALSE)) {
 				/** @var Nette\Application\Application $app */
 				$app->onError($app, $e);
 

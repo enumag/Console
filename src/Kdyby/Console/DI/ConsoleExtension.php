@@ -63,7 +63,7 @@ class ConsoleExtension extends Nette\DI\CompilerExtension
 		$this->loadHelperSet($config);
 
 		$builder->addDefinition($this->prefix('application'))
-			->setClass('Kdyby\Console\Application', [$config['name'], $config['version']])
+			->setClass('Kdyby\Console\Application', [$config['name'], $config['version'], $config['application']])
 			->addSetup('setHelperSet', [$this->prefix('@helperSet')])
 			->addSetup('injectServiceLocator')
 			->setInject(FALSE);
